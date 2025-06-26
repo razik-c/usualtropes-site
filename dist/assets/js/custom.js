@@ -1,35 +1,33 @@
-$("body").prepend('<div class="cursor"></div>');
+const cursor = document.querySelector('.cursor');
 
-$(document).mousemove(function (e) {
-  $(".cursor")
-    .eq(0)
-    .css({
-      left: e.pageX,
-      top: e.pageY - $(window).scrollTop(),
-    });
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+
+let cursorX = mouseX;
+let cursorY = mouseY;
+
+let speed = 0.5;
+
+function animate() {
+  let distX = mouseX - cursorX;
+  let distY = mouseY - cursorY;
+
+  cursorX += distX * speed;
+  cursorY += distY * speed;
+
+  cursor.style.left = cursorX + 'px';
+  cursor.style.top = cursorY + 'px';
+
+  requestAnimationFrame(animate);
+}
+
+// Center on load
+cursor.style.left = cursorX + 'px';
+cursor.style.top = cursorY + 'px';
+
+animate();
+
+document.addEventListener('mousemove', (event) => {
+  mouseX = event.pageX;
+  mouseY = event.pageY;
 });
-
-$("a")
-  .mouseenter(function () {
-    $(".cursor").addClass("hover");
-  })
-  .mouseleave(function () {
-    $(".cursor").removeClass("hover");
-  });
-
-var owl = $(".owl-carousel");
-$(".next").click(function () {
-  console.log("OKAY");
-  owl.trigger("next.owl.carousel");
-});
-
-$(".prev").click(function () {
-  owl.trigger("prev.owl.carousel");
-});
-owl.owlCarousel({
-  items: 4,
-  margin: 10,
-  loop: true,
-  nav: false,
-});
-

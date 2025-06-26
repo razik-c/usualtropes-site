@@ -10,7 +10,7 @@ const round = (num) =>
 const rem = (px) => `${round(px / 16)}rem`;
 const em = (px, base) => `${round(px / base)}em`;
 module.exports = {
-  content: ["./dist/*.{html,js}"],
+  content: ["./*.{html,js}"],
   darkMode: "class",
   theme: {
     extend: {

@@ -23,50 +23,170 @@
 <body class="bg-[#fff] text-[#36363]  prose lg:prose-desktop md:prose-tablet xl:prose-largerdesktop">
 
     <header>
-        <nav class="w-full z-50 top-0 left-0 bg-[#fff]">
-            <div class="navigation flex flex-wrap justify-center gap-12 items-center relative mx-auto py-8 container md:mt-5 rounded-md"
-                style="">
-                <div class="flex flex-col justify-center items-center group">
-                    <a class="w-fit rounded-lg font-semibold" href="#">Home</a>
-                    <div class="w-2 h-2 rounded-full bg-[#ff4438] mt-1 dot active-dot transition ease-in duration-150">
-                    </div>
-                </div>
-                <div class="flex flex-col justify-center items-center group">
-                    <a class="w-fit opacity-60 hover:opacity-80 rounded-lg font-semibold" href="#">About Us</a>
-                    <div class="w-2 h-2 rounded-full bg-[#fff] mt-1 dot transition ease-in duration-150"></div>
-                </div>
+        <nav class="w-full z-50 top-0 container bg-[#fff]">
+            <div class="navigation flex justify-between flex-wrap gap-12 items-center relative py-8 md:mt-5 rounded-md">
                 <div class="flex flex-col justify-center items-center group">
                     <a class="logo" href="#">
-                        <h3 class="font-bold text-2xl text-black mx-12">Usual Tropes</h3>
+                        <h3 class="font-bold text-2xl text-black">Usual Tropes <span class="text-[16px]">studio</span>
+                        </h3>
                     </a>
                     <div class="w-2 h-2 rounded-full bg-[#fff] mt-1 transition ease-in duration-150"></div>
                 </div>
-                <div class="flex flex-col justify-center items-center group">
-                    <a class="w-fit opacity-60 hover:opacity-80 rounded-lg font-semibold" href="#">Our Games</a>
-                    <div class="w-2 h-2 rounded-full bg-[#fff] mt-1 dot transition ease-in duration-150"></div>
-                </div>
-                <div class="flex flex-col justify-center items-center group">
-                    <a class="w-fit opacity-60 hover:opacity-80 rounded-lg font-semibold" href="#">Contact Us</a>
-                    <div class="w-2 h-2 rounded-full bg-[#fff] mt-1 dot transition ease-in duration-150"></div>
+                <div class="gap-8 hidden lg:flex">
+                    <div class="flex flex-col justify-center items-center group">
+                        <a class="w-fit rounded-lg font-semibold" href="#">Home</a>
+                        <div class="border border-black h-0.5 bg-black w-1/2 mt-1"></div>
+                    </div>
+                    <div class="flex flex-col justify-center items-center group">
+                        <a class="w-fit opacity-60 hover:opacity-80 rounded-lg font-semibold" href="#">About</a>
+                        <div class="w-2 h-2 rounded-full bg-[#fff] dot transition ease-in duration-150"></div>
+                    </div>
+
+                    <div class="flex flex-col justify-center items-center group">
+                        <a class="w-fit opacity-60 hover:opacity-80 rounded-lg font-semibold" href="#">Our Games</a>
+                        <div class="w-2 h-2 rounded-full bg-[#fff] dot transition ease-in duration-150"></div>
+                    </div>
+                    <div class="flex flex-col justify-center items-center group">
+                        <a class="w-fit opacity-60 hover:opacity-80 rounded-lg font-semibold" href="#">Contact Us</a>
+                        <div class="w-2 h-2 rounded-full bg-[#fff] dot transition ease-in duration-150"></div>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
 
+    <div class="cursor">
+    </div>
+
+    <div class="text-[32px] justify-end ml-auto"></div>
+
     <section>
         <div class="container mt-12">
-            <h3 class="text-black">
-                COMING SOON
-            </h3>
+            <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-11">
+                    <h1 class="text-3xl font-bold text-gray-900">Indie Games Studio</h1>
+                    <h2 class="text-xl font-semibold text-black mt-2 block__title">
+                        We are a passionate indie game studio, dedicating countless hours to crafting immersive code,
+                        compelling designs, and ambitious dreams.
+                        <br>
+                        <style>
+                            .slide-to-end {
+                                transform: translateX(180%);
+                            }
+                        </style>
+                        <div id="finsihedGamesCount" class="relative w-full h-auto hidden lg:flex ">
+                            <span id="gameWrapper"
+                                class="inline-block mt-4 text-[20px] transition-transform duration-700 ease-in-out">
+                                Number of finished games:
+                                <span id="gameCounter"
+                                    class="font-bold text-red-600 transition-all duration-700 ease-in-out"
+                                    style="font-size: 14px;">100+</span>
+                            </span>
+                        </div>
+
+                    </h2>
+                </div>
+            </div>
+
         </div>
     </section>
 
+    <section id="missionSection" class="bg-white text-black py-32 mt-20 transition-all duration-1000">
+        <style>
+            .fade-dark {
+                background-color: #161617 !important;
+                color: #fff !important;
+            }
 
-    <footer class="bg-[#161617] text-[#7e7e80] mt-8 md:mt-10 lg:mt-96 xl:mt-96 w-full pt-16 pb-8">
+            @keyframes flip-corner {
+                0% {
+                    transform: rotate(0deg) scale(1);
+                }
+
+                50% {
+                    transform: rotate(90deg) scale(1.2);
+                }
+
+                100% {
+                    transform: rotate(0deg) scale(1);
+                }
+            }
+
+ body {
+    user-select: none;
+ }
+
+            .corners-animate .corner-flip {
+                animation: flip-corner 0.8s ease-in-out;
+            }
+        </style>
+        <div class="container mx-auto px-4">
+            <div class="text-center max-w-4xl mx-auto">
+
+                <h2 class="text-3xl font-bold mb-6">What Drives Us</h2>
+                <p class="text-lg leading-relaxed">
+                    At Usual Tropes, we're obsessed with creating experiences that stay with players long after the
+                    credits roll.
+                    Every pixel, every mechanic, every twist is carefully crafted by a small team that lives and
+                    breathes games.
+                </p>
+                <p class="mt-6 text-lg leading-relaxed">
+                    We're not just making games – we're telling stories, building emotions, and experimenting
+                    fearlessly. <br>Expect the unexpected. No clichés. Only heart.
+
+                </p>
+                <div class="flex justify-center mt-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="relative container mx-auto px-4 text-center mt-16 rounded-md bg-[#161617]">
+            <div class="pointer-events-none absolute inset-0 z-10">
+                <div
+                    class="absolute top-5 left-5 w-12 h-12 border-t-[5px] border-l-[5px] border-white rounded-tl-md corner-flip">
+                </div>
+                <div
+                    class="absolute bottom-5 right-5 w-12 h-12 border-b-[5px] border-r-[5px] border-white rounded-br-md corner-flip">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 justify-items-center py-16 p-5">
+                <div class="flex flex-col items-center">
+                    <img src="dist/assets/images/godot-logo.png" alt="Godot" class="w-16 h-16 mb-2 invert">
+                    <span class="text-white font-semibold">Godot Engine</span>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <img src="dist/assets/images/vs-code-logo.png" alt="VS Code" class="w-16 h-16 mb-2 invert-0">
+                    <span class="text-white font-semibold">VS Code</span>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <img src="dist/assets/images/aseprite.svg" alt="Aseprite"
+                        class="w-16 h-16 mb-2 invert object-cover">
+                    <span class="text-white font-semibold">Aseprite</span>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <img src="dist/assets/images/krita-logo.png" alt="Krita" class="w-16 h-16 mb-2 invert">
+                    <span class="text-white font-semibold">Krita</span>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+    <footer class="bg-[#161617] text-[#7e7e80] w-full pt-16 pb-8">
         <div class="w-full px-4 md:px-5 lg:px-8 py-5 md:py-8 container">
             <div class="flex flex-col items-start justify-start gap-0">
                 <a href="index.html">
-                    <h3 class="font-bold text-white">Usual Tropes</h3>
+                    <h3 class="font-bold text-white">Usual Tropes <span class="text-[16px]">studio</span> </h3>
                     <p class="max-w-[39%] mt-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
                         tempor incididunt ut
                         labore et dolore magna aliqua. Ut enim ad minim veniam</p>
@@ -136,11 +256,65 @@
             </div>
         </div>
     </footer>
-    <!-- End Footer -->
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 <script src="dist/assets/js/custom.js"></script>
+<script>
+    let counter = 100;
+    const counterElement = document.getElementById("gameCounter");
+    const gameWrapper = document.getElementById("gameWrapper");
+
+    const countdown = setInterval(() => {
+        if (counter > 0) {
+            counter--;
+            counterElement.textContent = counter;
+        } else {
+            counterElement.textContent = "0";
+
+            setTimeout(() => {
+                counterElement.style.fontSize = "45px";
+            }, 200);
+
+            setTimeout(() => {
+
+                gameWrapper.classList.add("slide-to-end");
+            }, 350);
+
+            clearInterval(countdown);
+        }
+    }, 30);
+
+
+    const missionSection = document.getElementById("missionSection");
+
+    function onScrollFadeToDark() {
+        const rect = missionSection.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+
+        const visibleHeight = windowHeight - rect.top;
+        const sectionHeight = rect.height;
+
+        const visibilityRatio = visibleHeight / sectionHeight;
+
+        if (rect.top < windowHeight * 0.75) {
+            missionSection.classList.add("fade-dark");
+        } else {
+            missionSection.classList.remove("fade-dark");
+        }
+        if (visibilityRatio >= 0.8 && rect.top >= 0) {
+     
+            missionSection.classList.add("corners-animate");
+        } else {
+        
+            missionSection.classList.remove("corners-animate");
+        }
+    }
+
+
+    window.addEventListener("scroll", onScrollFadeToDark);
+
+</script>
 
 </html>
