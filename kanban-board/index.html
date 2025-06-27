@@ -1,31 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css">
-  <link rel="stylesheet" href="../dist/assets/styles/tailwind.css">
-  <link rel="stylesheet" href="../dist/assets/styles/main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usual Tropes Studio – Kanban</title>
+
+  <!-- Optional: clean styles (remove broken links) -->
   <style>
-    .navigation:hover .active-dot {
-      opacity: 0.1;
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: white;
+      margin: 0;
+      padding: 20px;
     }
 
-    .group:hover .dot:not(.active-dot) {
-      background-color: rgba(0, 0, 0, 0.2);
+    .board {
+      display: flex;
+      justify-content: space-around;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .column {
+      background: #1e1e1e;
+      padding: 15px;
+      border-radius: 8px;
+      width: 30%;
+    }
+
+    .column h2 {
+      text-align: center;
+    }
+
+    .task-container {
+      min-height: 100px;
+      background: #2a2a2a;
+      padding: 10px;
+      border-radius: 6px;
+    }
+
+    .task {
+      background: white;
+      color: black;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: grab;
+    }
+
+    .new-task {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      width: 200px;
+      border-radius: 4px;
+      border: none;
+      margin-right: 10px;
     }
   </style>
-  <title>Usual Tropes Studio</title>
 </head>
-
 <body>
+  <h1>Usual Tropes – Kanban Board</h1>
 
-  <button id="loginBtn">Sign in with Google</button>
-  <button id="logoutBtn" style="display: none;">Sign Out</button>
+  <div id="auth-section">
+    <button id="loginBtn">Sign in with Google</button>
+    <button id="logoutBtn" style="display: none;">Sign Out</button>
+    <p id="userDisplay"></p>
+  </div>
 
-  <section>
-    <h1>Usual Tropes - Kanban Board</h1>
+  <!-- ✅ Board container needs this ID for logic -->
+  <section id="boardSection" style="display: none;">
     <div class="board">
       <div class="column" data-status="todo">
         <h2>To Do</h2>
@@ -40,26 +88,24 @@
         <div class="task-container" id="done"></div>
       </div>
     </div>
+
     <div class="new-task">
       <input type="text" id="newTaskInput" placeholder="New task..." />
       <button onclick="addTask()">Add Task</button>
     </div>
   </section>
 
-
+  <!-- ✅ Firebase + Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {
-      getFirestore, doc, getDoc, setDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import {
-      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyCVTnuzGjb4qcNLWp_0kddmSL25o3Sqkzs",
       authDomain: "usual-tropes-board.firebaseapp.com",
       projectId: "usual-tropes-board",
-      storageBucket: "usual-tropes-board.firebasestorage.app",
+      storageBucket: "usual-tropes-board.appspot.com",
       messagingSenderId: "384616382226",
       appId: "1:384616382226:web:b85bd7261d36706faabdcb"
     };
@@ -70,19 +116,13 @@
     const provider = new GoogleAuthProvider();
 
     let currentUser = null;
-    let boardData = {
-      todo: [],
-      inProgress: [],
-      done: []
-    };
+    let boardData = { todo: [], inProgress: [], done: [] };
 
-    // 🌐 DOM Elements
     const loginBtn = document.getElementById("loginBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     const boardSection = document.getElementById("boardSection");
     const userDisplay = document.getElementById("userDisplay");
 
-    // 🔐 Login
     loginBtn.onclick = async () => {
       try {
         const result = await signInWithPopup(auth, provider);
@@ -92,14 +132,12 @@
       }
     };
 
-    // 🔓 Logout
     logoutBtn.onclick = async () => {
       await signOut(auth);
       boardSection.style.display = "none";
       userDisplay.textContent = "";
     };
 
-    // 👀 Watch Auth State
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentUser = user;
@@ -116,7 +154,6 @@
       }
     });
 
-    // 🧠 Firestore Logic
     const getBoardRef = () => doc(db, "boards", currentUser.uid);
 
     async function loadBoard() {
@@ -128,9 +165,55 @@
       if (!currentUser) return;
       await setDoc(getBoardRef(), boardData);
     }
+
+    window.addTask = async function () {
+      const input = document.getElementById("newTaskInput");
+      const task = input.value.trim();
+      if (task) {
+        boardData.todo.push(task);
+        input.value = "";
+        await saveBoard();
+        renderBoard();
+      }
+    };
+
+    function renderBoard() {
+      for (let status of ["todo", "inProgress", "done"]) {
+        const container = document.getElementById(status);
+        container.innerHTML = "";
+        boardData[status].forEach((task, index) => {
+          const div = document.createElement("div");
+          div.className = "task";
+          div.draggable = true;
+          div.textContent = task;
+          div.dataset.index = index;
+          div.dataset.status = status;
+          container.appendChild(div);
+        });
+      }
+    }
+
+    document.addEventListener("dragstart", (e) => {
+      if (e.target.classList.contains("task")) {
+        e.dataTransfer.setData("text/plain", JSON.stringify({
+          status: e.target.dataset.status,
+          index: e.target.dataset.index
+        }));
+      }
+    });
+
+    document.querySelectorAll(".task-container").forEach(container => {
+      container.addEventListener("dragover", (e) => e.preventDefault());
+      container.addEventListener("drop", async (e) => {
+        e.preventDefault();
+        const { status, index } = JSON.parse(e.dataTransfer.getData("text/plain"));
+        const task = boardData[status].splice(index, 1)[0];
+        const targetStatus = container.id;
+        boardData[targetStatus].push(task);
+        await saveBoard();
+        renderBoard();
+      });
+    });
   </script>
-
-
 </body>
-
 </html>
