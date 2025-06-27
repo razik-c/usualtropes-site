@@ -21,6 +21,9 @@
 
 <body>
 
+      <button id="loginBtn">Sign in with Google</button>
+    <button id="logoutBtn" style="display: none;">Sign Out</button>
+
   <section>
     <h1>Usual Tropes - Kanban Board</h1>
     <div class="board">
@@ -45,92 +48,86 @@
 
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore, doc, getDoc, setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVTnuzGjb4qcNLWp_0kddmSL25o3Sqkzs",
+      authDomain: "usual-tropes-board.firebaseapp.com",
+      projectId: "usual-tropes-board",
+      storageBucket: "usual-tropes-board.firebasestorage.app",
+      messagingSenderId: "384616382226",
+      appId: "1:384616382226:web:b85bd7261d36706faabdcb"
+    };
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCVTnuzGjb4qcNLWp_0kddmSL25o3Sqkzs",
-  authDomain: "usual-tropes-board.firebaseapp.com",
-  projectId: "usual-tropes-board",
-  storageBucket: "usual-tropes-board.firebasestorage.app",
-  messagingSenderId: "384616382226",
-  appId: "1:384616382226:web:b85bd7261d36706faabdcb"
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+let currentUser = null;
+let boardData = {
+  todo: [],
+  inProgress: [],
+  done: []
 };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+// 🌐 DOM Elements
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const boardSection = document.getElementById("boardSection");
+const userDisplay = document.getElementById("userDisplay");
 
-    let boardData = {
-      todo: [],
-      inProgress: [],
-      done: []
-    };
+// 🔐 Login
+loginBtn.onclick = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    console.log("Signed in as:", result.user.displayName);
+  } catch (err) {
+    console.error("Login error", err);
+  }
+};
 
-    const boardRef = doc(db, "boards", "default");
+// 🔓 Logout
+logoutBtn.onclick = async () => {
+  await signOut(auth);
+  boardSection.style.display = "none";
+  userDisplay.textContent = "";
+};
 
-    signInAnonymously(auth).then(async () => {
-      const snap = await getDoc(boardRef);
-      if (snap.exists()) {
-        boardData = snap.data();
-      }
-      renderBoard();
-    }).catch(console.error);
+// 👀 Watch Auth State
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    userDisplay.textContent = `Logged in as ${user.displayName}`;
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "inline-block";
+    boardSection.style.display = "block";
+    await loadBoard();
+    renderBoard();
+  } else {
+    loginBtn.style.display = "inline-block";
+    logoutBtn.style.display = "none";
+    boardSection.style.display = "none";
+  }
+});
 
-    function renderBoard() {
-      for (let status of ["todo", "inProgress", "done"]) {
-        const container = document.getElementById(status);
-        container.innerHTML = "";
-        boardData[status].forEach((task, index) => {
-          const div = document.createElement("div");
-          div.className = "task";
-          div.draggable = true;
-          div.textContent = task;
-          div.dataset.index = index;
-          div.dataset.status = status;
-          container.appendChild(div);
-        });
-      }
-    }
+// 🧠 Firestore Logic
+const getBoardRef = () => doc(db, "boards", currentUser.uid);
 
-    window.addTask = async function () {
-      const input = document.getElementById("newTaskInput");
-      const task = input.value.trim();
-      if (task) {
-        boardData.todo.push(task);
-        input.value = "";
-        await saveBoard();
-        renderBoard();
-      }
-    };
+async function loadBoard() {
+  const snap = await getDoc(getBoardRef());
+  boardData = snap.exists() ? snap.data() : { todo: [], inProgress: [], done: [] };
+}
 
-    async function saveBoard() {
-      await setDoc(boardRef, boardData);
-    }
-
-    document.addEventListener("dragstart", (e) => {
-      if (e.target.classList.contains("task")) {
-        e.dataTransfer.setData("text/plain", JSON.stringify({
-          status: e.target.dataset.status,
-          index: e.target.dataset.index
-        }));
-      }
-    });
-
-    document.querySelectorAll(".task-container").forEach(container => {
-      container.addEventListener("dragover", (e) => e.preventDefault());
-      container.addEventListener("drop", async (e) => {
-        e.preventDefault();
-        const { status, index } = JSON.parse(e.dataTransfer.getData("text/plain"));
-        const task = boardData[status].splice(index, 1)[0];
-        const targetStatus = container.id;
-        boardData[targetStatus].push(task);
-        await saveBoard();
-        renderBoard();
-      });
-    });
-
+async function saveBoard() {
+  if (!currentUser) return;
+  await setDoc(getBoardRef(), boardData);
+}
   </script>
 
 
