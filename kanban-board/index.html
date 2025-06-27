@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css">
-  <link rel="stylesheet" href="dist/assets/styles/tailwind.css">
-  <link rel="stylesheet" href="dist/assets/styles/main.css">
+  <link rel="stylesheet" href="../dist/assets/styles/tailwind.css">
+  <link rel="stylesheet" href="../dist/assets/styles/main.css">
   <style>
     .navigation:hover .active-dot {
       opacity: 0.1;
@@ -21,8 +21,8 @@
 
 <body>
 
-      <button id="loginBtn">Sign in with Google</button>
-    <button id="logoutBtn" style="display: none;">Sign Out</button>
+  <button id="loginBtn">Sign in with Google</button>
+  <button id="logoutBtn" style="display: none;">Sign Out</button>
 
   <section>
     <h1>Usual Tropes - Kanban Board</h1>
@@ -48,13 +48,13 @@
 
 
   <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getFirestore, doc, getDoc, setDoc
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import {
-  getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, doc, getDoc, setDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     const firebaseConfig = {
       apiKey: "AIzaSyCVTnuzGjb4qcNLWp_0kddmSL25o3Sqkzs",
       authDomain: "usual-tropes-board.firebaseapp.com",
@@ -64,70 +64,70 @@ import {
       appId: "1:384616382226:web:b85bd7261d36706faabdcb"
     };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-let currentUser = null;
-let boardData = {
-  todo: [],
-  inProgress: [],
-  done: []
-};
+    let currentUser = null;
+    let boardData = {
+      todo: [],
+      inProgress: [],
+      done: []
+    };
 
-// 🌐 DOM Elements
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const boardSection = document.getElementById("boardSection");
-const userDisplay = document.getElementById("userDisplay");
+    // 🌐 DOM Elements
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const boardSection = document.getElementById("boardSection");
+    const userDisplay = document.getElementById("userDisplay");
 
-// 🔐 Login
-loginBtn.onclick = async () => {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    console.log("Signed in as:", result.user.displayName);
-  } catch (err) {
-    console.error("Login error", err);
-  }
-};
+    // 🔐 Login
+    loginBtn.onclick = async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        console.log("Signed in as:", result.user.displayName);
+      } catch (err) {
+        console.error("Login error", err);
+      }
+    };
 
-// 🔓 Logout
-logoutBtn.onclick = async () => {
-  await signOut(auth);
-  boardSection.style.display = "none";
-  userDisplay.textContent = "";
-};
+    // 🔓 Logout
+    logoutBtn.onclick = async () => {
+      await signOut(auth);
+      boardSection.style.display = "none";
+      userDisplay.textContent = "";
+    };
 
-// 👀 Watch Auth State
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    currentUser = user;
-    userDisplay.textContent = `Logged in as ${user.displayName}`;
-    loginBtn.style.display = "none";
-    logoutBtn.style.display = "inline-block";
-    boardSection.style.display = "block";
-    await loadBoard();
-    renderBoard();
-  } else {
-    loginBtn.style.display = "inline-block";
-    logoutBtn.style.display = "none";
-    boardSection.style.display = "none";
-  }
-});
+    // 👀 Watch Auth State
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        userDisplay.textContent = `Logged in as ${user.displayName}`;
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+        boardSection.style.display = "block";
+        await loadBoard();
+        renderBoard();
+      } else {
+        loginBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+        boardSection.style.display = "none";
+      }
+    });
 
-// 🧠 Firestore Logic
-const getBoardRef = () => doc(db, "boards", currentUser.uid);
+    // 🧠 Firestore Logic
+    const getBoardRef = () => doc(db, "boards", currentUser.uid);
 
-async function loadBoard() {
-  const snap = await getDoc(getBoardRef());
-  boardData = snap.exists() ? snap.data() : { todo: [], inProgress: [], done: [] };
-}
+    async function loadBoard() {
+      const snap = await getDoc(getBoardRef());
+      boardData = snap.exists() ? snap.data() : { todo: [], inProgress: [], done: [] };
+    }
 
-async function saveBoard() {
-  if (!currentUser) return;
-  await setDoc(getBoardRef(), boardData);
-}
+    async function saveBoard() {
+      if (!currentUser) return;
+      await setDoc(getBoardRef(), boardData);
+    }
   </script>
 
 
